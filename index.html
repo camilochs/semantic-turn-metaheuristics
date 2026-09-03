@@ -118,7 +118,7 @@
 <section class="band band-alt" id="question">
   <div class="wrap narrow">
     <p class="kicker reveal">The question this tutorial answers</p>
-    <h2 class="reveal">One operator, three prompts.<br><em>Which information should it see?</em></h2>
+    <h2 class="reveal">One operator, three prompts.<br><em>Which information should condition it?</em></h2>
     <p class="reveal">
       Consider a practitioner building an LLM-assisted heuristic for the Travelling Salesman Problem.
       The loop is the same in all three cases — ask the model for the next construction heuristic.
@@ -152,7 +152,7 @@ h3: 419</code></pre>
         <p class="ch-body">
           The encoded search information classical metaheuristics already consume: solution encodings,
           instance features, scalar scores, ranked parents, score trajectories. Evaluative content —
-          easiest to check, least portable.
+          <em>how good is this?</em> — easiest to check, least portable.
         </p>
       </article>
 
@@ -168,7 +168,8 @@ h3: 419</code></pre>
         <p class="ch-body">
           Machine-interpretable artifacts with formal structure — code, syntax trees, formal rules,
           structured graphs — whose syntax or behaviour a parser, validator, compiler or executor can
-          check. Denotational content, verifiable by execution.
+          check. Denotational content — <em>what does this compute or do?</em> — verifiable by
+          execution.
         </p>
       </article>
 
@@ -183,14 +184,15 @@ h3: 419</code></pre>
         <p class="ch-cap">strategy-level change to the heuristic</p>
         <p class="ch-body">
           Operative natural language: critiques, reflections, diagnoses, design principles, strategy
-          notes that steer later proposals. Propositional content — travels furthest, least
-          mechanically checkable.
+          notes that steer later proposals. Propositional content — <em>why does this work, and
+          what should change?</em> — travels furthest, least mechanically checkable.
         </p>
       </article>
     </div>
 
     <p class="aside reveal">
-      <strong>Not a ranking.</strong> <code>Symbolic</code> and <code>Linguistic</code> both add more
+      <strong>The three channels sit side by side; none subsumes the others.</strong>
+      <code>Symbolic</code> and <code>Linguistic</code> both add more
       explicit structure than <code>Numeric</code>, but they are incomparable with each other: code can
       be more structure-preserving than prose, while prose can express abstractions absent from the
       code. Fixed task headers and static problem statements do not by themselves make a
@@ -214,7 +216,7 @@ h3: 419</code></pre>
       <article class="pz reveal">
         <span class="pz-n">iii</span>
         <h3><code>Transfer</code></h3>
-        <p>Source-domain evidence is distilled into an inspectable artifact or principle, re-bound in a new domain without rediscovery. An emerging frontier, not a mature category.</p>
+        <p>Source-domain evidence is distilled into an inspectable artifact or principle, re-bound in a new domain without rediscovery. Still an emerging frontier — few methods reach this far.</p>
       </article>
     </div>
   </div>
@@ -320,7 +322,9 @@ h3: 419</code></pre>
     </div>
     <p class="tbl-note">
       PR = peer-reviewed &middot; pre = preprint &middot; own = source-specific benchmark &middot;
-      matched = same evaluator &middot; qual = qualitative only &middot; † boundary case.
+      matched = same evaluator &middot; qual = qualitative only &middot; † boundary case.<br>
+      BPP = bin packing problem &middot; BBOB = the black-box optimization benchmark suite &middot;
+      p.p. = percentage points.
     </p>
   </div>
 </section>
@@ -344,6 +348,10 @@ h3: 419</code></pre>
         <tbody></tbody>
       </table>
     </div>
+    <p class="tbl-note">
+      NL = natural language &middot; AHD = automatic heuristic design, the offline design of a
+      heuristic by search.
+    </p>
 
     <h3 class="sub reveal">Validation of the placement rule</h3>
     <p class="section-note reveal">
@@ -372,22 +380,24 @@ h3: 419</code></pre>
     <div class="callout reveal">
       <p class="callout-k">Load-bearing test — a negative result, reported</p>
       <p>
-        A drop-channel ablation on an EoH-style operator for online bin packing compared heuristics
-        generated <em>with</em> versus <em>without</em> the natural-language idea, holding parent code
-        and scores fixed. On this easy task <strong>both conditions reached the optimum</strong> (mean
-        gap 0%; 6 of 6 candidates optimal), so the ablation did not demonstrate performance necessity
-        for the linguistic channel on that task. EoH is still reported as <code>Linguistic</code>,
-        because the idea is the source-described design-intent signal that structurally distinguishes
-        it from code-only heuristic design. Placement is reproducible; <em>how much</em> a present
-        channel contributes is task-dependent.
+        A drop-channel ablation compared an EoH-style operator on online bin packing with and without
+        its natural-language idea, holding parent code and scores fixed. On this easy task
+        <strong>both conditions reached the optimum</strong> (mean gap 0%; 6 of 6 candidates
+        optimal). The ablation did not demonstrate performance necessity for the linguistic channel
+        on that task.
+      </p>
+      <p>
+        EoH is still reported as <code>Linguistic</code>: the idea is the source-described
+        design-intent signal that structurally distinguishes it from code-only heuristic design.
+        Placement is reproducible; <em>how much</em> a present channel contributes is task-dependent.
       </p>
     </div>
 
     <h3 class="sub reveal">Extended coverage map</h3>
     <p class="section-note reveal">
       A broader set of methods placed on the lens, beyond the representative ones, to show the field's
-      breadth. Each entry is read against its primary source. This is a breadth map, not a systematic
-      census. Entries marked <em>adjacent</em> fall outside the lens: they translate a specification
+      breadth. Each entry is read against its primary source. It shows the shape of the field; the
+      systematic census lives elsewhere. Entries marked <em>adjacent</em> fall outside the lens: they translate a specification
       rather than vary a candidate, and are listed only as foils.
     </p>
     <div class="filters reveal" role="group" aria-label="Filter coverage table">
