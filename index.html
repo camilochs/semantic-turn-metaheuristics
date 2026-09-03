@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Hand-Crafted to LLM-Based Variation Operators in Metaheuristics — A Tutorial</title>
+<meta name="description" content="A tutorial on classifying, building, and choosing LLM-based variation operators for metaheuristics, organized by conditioning channel (Numeric, Symbolic, Linguistic) and artifact persistence (Transient, Amortized, Transfer).">
+<meta name="author" content="Camilo Chacón Sartori, Guillem Rodríguez-Corominas, Christian Blum">
+<meta property="og:type" content="article">
+<meta property="og:title" content="From Hand-Crafted to LLM-Based Variation Operators in Metaheuristics">
+<meta property="og:description" content="The semantic turn in metaheuristics: an operator-level framework for classifying, building, and choosing LLM variation operators.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<a class="skip" href="#abstract">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="nav-brand" href="#top">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="nav-brand-t">The Semantic Turn</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#lens">Lens</a>
+      <a href="#map">Map</a>
+      <a href="#inside">Tutorial</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#appendix">Appendix</a>
+      <a href="#code">Code</a>
+      <a href="#cite">Cite</a>
+    </nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch colour theme">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66l1.41-1.41M4.93 19.07l1.41-1.41m0-11.32L4.93 4.93m14.14 14.14l-1.41-1.41M16 12a4 4 0 11-8 0 4 4 0 018 0z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="moon" d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="nav-progress" id="progress"></div>
+</header>
+
+<main id="top">
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow reveal">Tutorial &middot; Metaheuristics &times; Large Language Models</p>
+    <h1 class="reveal">
+      From Hand-Crafted to<br>
+      <em>LLM-Based Variation Operators</em><br>
+      in Metaheuristics
+    </h1>
+    <p class="hero-sub reveal">
+      When a language model writes the next candidate, variation stops being a fixed kernel and
+      becomes a <strong>model call conditioned on information you choose</strong>. This tutorial gives
+      you the framework to classify that choice, build it, and decide whether it earns its cost.
+    </p>
+
+    <div class="authors reveal">
+      <span class="author">Camilo Chacón Sartori<sup>1,2</sup></span>
+      <span class="author">Guillem Rodríguez-Corominas<sup>2,3</sup></span>
+      <span class="author">Christian Blum<sup>2</sup></span>
+    </div>
+    <p class="affils reveal">
+      <sup>1</sup>Apeiron Intelligence, Barcelona &nbsp;·&nbsp;
+      <sup>2</sup>Artificial Intelligence Research Institute (IIIA-CSIC), Bellaterra &nbsp;·&nbsp;
+      <sup>3</sup>Universitat Politècnica de Catalunya (UPC), Barcelona
+    </p>
+
+    <div class="actions reveal">
+      <a class="btn btn-primary is-soon" href="#cite" data-soon="Preprint in preparation">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 3h7l5 5v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        Paper <span class="soon">soon</span>
+      </a>
+      <a class="btn" href="https://github.com/camilochs/semantic-turn-companion">
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Companion code
+      </a>
+      <a class="btn" href="#cite">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── ABSTRACT ─────────────────────────── -->
+<section class="band" id="abstract">
+  <div class="wrap narrow">
+    <p class="kicker reveal">Abstract</p>
+    <p class="lead reveal">
+      Large language models (LLMs) are increasingly being employed as variation operators in
+      metaheuristics, generating or modifying candidate solutions, heuristics, or programs inside
+      iterative search loops. This shift, the <em>semantic turn</em>, reframes variation as a model
+      call conditioned on different types of information. We introduce an operator-level framework
+      with two descriptors: (1)&nbsp;the type of prompt-conditioning information at variation time
+      (<code>Numeric</code>, <code>Symbolic</code>, <code>Linguistic</code>), and (2)&nbsp;artifact
+      persistence, identifying what survives the model call (<code>Transient</code>,
+      <code>Amortized</code>, <code>Transfer</code>). The tutorial shows how to classify, build, and
+      select these operators through a worked build template, a method survey, an evidence table,
+      and a cost-aware decision guide.
+    </p>
+    <p class="keywords reveal">
+      <span>large language models</span><span>metaheuristics</span><span>variation operators</span><span>evolutionary computation</span><span>combinatorial optimization</span><span>prompt conditioning</span><span>artifact persistence</span>
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── THE QUESTION ─────────────────────────── -->
+<section class="band band-alt" id="question">
+  <div class="wrap narrow">
+    <p class="kicker reveal">The question this tutorial answers</p>
+    <h2 class="reveal">One operator, three prompts.<br><em>Which information should it see?</em></h2>
+    <p class="reveal">
+      Consider a practitioner building an LLM-assisted heuristic for the Travelling Salesman Problem.
+      The loop is the same in all three cases — ask the model for the next construction heuristic.
+      What changes is what goes into the prompt. That single choice shifts cost across validation,
+      evaluation and inference, and it is the axis the literature has not been organized around.
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── THE LENS ─────────────────────────── -->
+<section class="band" id="lens">
+  <div class="wrap">
+    <p class="kicker reveal">01 — The organizing lens</p>
+    <h2 class="reveal">Conditioning channels</h2>
+    <p class="section-note reveal">
+      A method is classified by the <strong>dominant</strong> channel in its variation prompt: the one
+      that most drives the proposal. Most real methods are hybrids, so the full set of channels is
+      reported and only the load-bearing one names the method.
+    </p>
+
+    <div class="channels">
+      <article class="ch ch-num reveal">
+        <div class="ch-head">
+          <span class="ch-dot" aria-hidden="true"></span>
+          <h3><code>Numeric</code></h3>
+        </div>
+        <pre class="snippet"><code>h1: 427
+h2: 411
+h3: 419</code></pre>
+        <p class="ch-cap">score-only trajectory over heuristics</p>
+        <p class="ch-body">
+          The encoded search information classical metaheuristics already consume: solution encodings,
+          instance features, scalar scores, ranked parents, score trajectories. Evaluative content —
+          easiest to check, least portable.
+        </p>
+      </article>
+
+      <article class="ch ch-sym reveal">
+        <div class="ch-head">
+          <span class="ch-dot" aria-hidden="true"></span>
+          <h3><code>Symbolic</code></h3>
+        </div>
+        <pre class="snippet"><code>def step(T, U):
+    c = nearest(T[-1], U)
+    return T + [c]</code></pre>
+        <p class="ch-cap">executable construction rule</p>
+        <p class="ch-body">
+          Machine-interpretable artifacts with formal structure — code, syntax trees, formal rules,
+          structured graphs — whose syntax or behaviour a parser, validator, compiler or executor can
+          check. Denotational content, verifiable by execution.
+        </p>
+      </article>
+
+      <article class="ch ch-lin reveal">
+        <div class="ch-head">
+          <span class="ch-dot" aria-hidden="true"></span>
+          <h3><code>Linguistic</code></h3>
+        </div>
+        <pre class="snippet"><code>"NN assigns tours to clusters;
+ try a savings merge;
+ then apply 2-opt repair"</code></pre>
+        <p class="ch-cap">strategy-level change to the heuristic</p>
+        <p class="ch-body">
+          Operative natural language: critiques, reflections, diagnoses, design principles, strategy
+          notes that steer later proposals. Propositional content — travels furthest, least
+          mechanically checkable.
+        </p>
+      </article>
+    </div>
+
+    <p class="aside reveal">
+      <strong>Not a ranking.</strong> <code>Symbolic</code> and <code>Linguistic</code> both add more
+      explicit structure than <code>Numeric</code>, but they are incomparable with each other: code can
+      be more structure-preserving than prose, while prose can express abstractions absent from the
+      code. Fixed task headers and static problem statements do not by themselves make a
+      method <code>Linguistic</code>.
+    </p>
+
+    <h2 class="reveal mt">Artifact persistence</h2>
+    <p class="section-note reveal">The second descriptor asks a different question: what survives the model call?</p>
+
+    <div class="persist">
+      <article class="pz reveal">
+        <span class="pz-n">i</span>
+        <h3><code>Transient</code></h3>
+        <p>The LLM sits inside the loop. Every step pays a model call, and nothing outlives the run.</p>
+      </article>
+      <article class="pz reveal">
+        <span class="pz-n">ii</span>
+        <h3><code>Amortized</code></h3>
+        <p>The model is called offline to emit an artifact — a heuristic, a program — that then runs at near-zero runtime cost.</p>
+      </article>
+      <article class="pz reveal">
+        <span class="pz-n">iii</span>
+        <h3><code>Transfer</code></h3>
+        <p>Source-domain evidence is distilled into an inspectable artifact or principle, re-bound in a new domain without rediscovery. An emerging frontier, not a mature category.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── THE MAP ─────────────────────────── -->
+<section class="band band-alt" id="map">
+  <div class="wrap">
+    <p class="kicker reveal">02 — The map</p>
+    <h2 class="reveal">Where the field actually sits</h2>
+    <p class="section-note reveal">
+      Representative methods placed on the two descriptors. Read each cell as a coordinate pair: what
+      conditions the call, and what survives it. The empty cells are <strong>gaps in the current
+      landscape, not impossibility claims</strong>.
+    </p>
+
+    <div class="matrix-wrap reveal">
+      <div class="matrix" role="table" aria-label="Conditioning by persistence map">
+        <div class="mx-corner" role="presentation"></div>
+        <div class="mx-col mx-col-num" role="columnheader"><code>Numeric</code></div>
+        <div class="mx-col mx-col-sym" role="columnheader"><code>Symbolic</code></div>
+        <div class="mx-col mx-col-lin" role="columnheader"><code>Linguistic</code></div>
+
+        <div class="mx-row" role="rowheader"><code>Transfer</code></div>
+        <div class="mx-cell is-empty" role="cell"><span class="mx-open">open</span></div>
+        <div class="mx-cell is-empty" role="cell"><span class="mx-open">open</span></div>
+        <div class="mx-cell c-lin" role="cell"><span>LAPT</span><span>HiFo-Prompt</span></div>
+
+        <div class="mx-row" role="rowheader"><code>Amortized</code></div>
+        <div class="mx-cell is-empty" role="cell"><span class="mx-open">open</span></div>
+        <div class="mx-cell c-sym" role="cell"><span>FunSearch</span><span>LLaMEA</span></div>
+        <div class="mx-cell c-lin" role="cell"><span>EoH</span><span>ReEvo</span></div>
+
+        <div class="mx-row" role="rowheader"><code>Transient</code></div>
+        <div class="mx-cell c-num" role="cell"><span>LMX</span><span>LLMOA</span><span>EvoLLM</span><span class="dag">OPRO</span><span class="dag">EvoPrompt</span></div>
+        <div class="mx-cell c-sym" role="cell"><span>MOLLEO</span><span>LLEMA</span><span>GI-LLM</span></div>
+        <div class="mx-cell c-lin" role="cell"><span>SGE</span><span>MAEF</span></div>
+      </div>
+      <p class="mx-legend">
+        <span class="dag-key">†</span> prompt-optimization boundary cases whose placement depends on prompt design.
+        Methods cluster on and below the diagonal because higher persistence tends to require more
+        domain-independent conditioning — a structural tendency the current body of methods reflects,
+        not a law.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── INSIDE ─────────────────────────── -->
+<section class="band" id="inside">
+  <div class="wrap">
+    <p class="kicker reveal">03 — Inside the tutorial</p>
+    <h2 class="reveal">Four things you can take to your own loop</h2>
+    <div class="cards">
+      <article class="card reveal">
+        <span class="card-n">01</span>
+        <h3>A worked build template</h3>
+        <p>The full prompt → sample → parse-and-validate → bounded-repair → select loop, written out as
+        an algorithm with an explicit repair cap, and mirrored by runnable code.</p>
+      </article>
+      <article class="card reveal">
+        <span class="card-n">02</span>
+        <h3>A method survey on one axis</h3>
+        <p>Representative and extended coverage of the literature classified by dominant conditioning
+        channel and persistence — 30 methods placed against their primary sources.</p>
+      </article>
+      <article class="card reveal">
+        <span class="card-n">03</span>
+        <h3>An evidence table that refuses to be a leaderboard</h3>
+        <p>Each method's own headline result, tagged with whether it is peer-reviewed or preprint, and
+        whether the comparison is matched, source-local, or qualitative.</p>
+      </article>
+      <article class="card reveal">
+        <span class="card-n">04</span>
+        <h3>A cost-aware decision guide</h3>
+        <p>A staged flowchart whose first branch is the null choice: add an LLM operator only when it
+        adds a capability a classical operator does not. The test is a capability gap, not model
+        availability.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── EVIDENCE ─────────────────────────── -->
+<section class="band band-alt" id="evidence">
+  <div class="wrap">
+    <p class="kicker reveal">04 — Evidence summary</p>
+    <h2 class="reveal">What each method actually reports</h2>
+    <p class="section-note reveal">
+      Reported results are source-specific. Compare across rows only where the evidence column says
+      <span class="tag t-matched">matched</span> — same evaluator, same harness. Everything else is a
+      useful signal, not settled comparative evidence.
+    </p>
+    <div class="tbl-scroll reveal">
+      <table class="tbl" id="tbl-eval">
+        <thead>
+          <tr>
+            <th>Method</th><th>Conditioning</th><th>Emitted</th><th>Call locus</th><th>Evidence</th><th>Reported result</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="tbl-note">
+      PR = peer-reviewed &middot; pre = preprint &middot; own = source-specific benchmark &middot;
+      matched = same evaluator &middot; qual = qualitative only &middot; † boundary case.
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── APPENDIX ─────────────────────────── -->
+<section class="band" id="appendix">
+  <div class="wrap">
+    <p class="kicker reveal">05 — Appendix results</p>
+    <h2 class="reveal">Placing every method: the drop-channel audit</h2>
+    <p class="section-note reveal">
+      A classification is only as good as its rule. The audit applies one operation to every method:
+      remove or neutralize a channel while keeping a valid scaffold, and see whether the operator still
+      has anything to work with. This is what resolves the awkward cases — methods that
+      <em>emit</em> code yet are steered by natural language.
+    </p>
+    <div class="tbl-scroll reveal">
+      <table class="tbl" id="tbl-audit">
+        <thead>
+          <tr><th>Method</th><th>Channels present</th><th>Dominance</th><th>Drop-channel reasoning</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h3 class="sub reveal">Validation of the placement rule</h3>
+    <p class="section-note reveal">
+      Two checks accompany the companion code — one for reproducibility, one for whether a channel is
+      actually load-bearing. The second returned a negative result, and it is reported as such.
+    </p>
+
+    <div class="stats reveal">
+      <div class="stat">
+        <span class="stat-n">3</span>
+        <span class="stat-l">independent LLM coders</span>
+        <span class="stat-d">One instance each from Claude Fable&nbsp;5, GPT-5.5 and DeepSeek-V4-Pro, queried separately and shown only the placement rule and the channel descriptions.</span>
+      </div>
+      <div class="stat">
+        <span class="stat-n">9<span class="stat-of">/12</span></span>
+        <span class="stat-l">methods coded unanimously</span>
+        <span class="stat-d">The three divergences fall on cases the audit table already flags: OPRO and LMX, whose bare “solution” descriptions under-determine the representation, and ReEvo, where reflection and code-substrate readings compete.</span>
+      </div>
+      <div class="stat">
+        <span class="stat-n">0.73</span>
+        <span class="stat-l">Gwet's AC1 agreement</span>
+        <span class="stat-d">Chance-corrected agreement across the three coders — the measure that discounts the agreement you would get by luck alone. The labelling is largely reproducible; its contested cases are exactly the annotated boundary ones.</span>
+      </div>
+    </div>
+
+    <div class="callout reveal">
+      <p class="callout-k">Load-bearing test — a negative result, reported</p>
+      <p>
+        A drop-channel ablation on an EoH-style operator for online bin packing compared heuristics
+        generated <em>with</em> versus <em>without</em> the natural-language idea, holding parent code
+        and scores fixed. On this easy task <strong>both conditions reached the optimum</strong> (mean
+        gap 0%; 6 of 6 candidates optimal), so the ablation did not demonstrate performance necessity
+        for the linguistic channel on that task. EoH is still reported as <code>Linguistic</code>,
+        because the idea is the source-described design-intent signal that structurally distinguishes
+        it from code-only heuristic design. Placement is reproducible; <em>how much</em> a present
+        channel contributes is task-dependent.
+      </p>
+    </div>
+
+    <h3 class="sub reveal">Extended coverage map</h3>
+    <p class="section-note reveal">
+      A broader set of methods placed on the lens, beyond the representative ones, to show the field's
+      breadth. Each entry is read against its primary source. This is a breadth map, not a systematic
+      census. Entries marked <em>adjacent</em> fall outside the lens: they translate a specification
+      rather than vary a candidate, and are listed only as foils.
+    </p>
+    <div class="filters reveal" role="group" aria-label="Filter coverage table">
+      <button class="chip is-on" data-f="all">All <span class="chip-c" id="c-all"></span></button>
+      <button class="chip chip-num" data-f="Numeric">Numeric <span class="chip-c" id="c-num"></span></button>
+      <button class="chip chip-sym" data-f="Symbolic">Symbolic <span class="chip-c" id="c-sym"></span></button>
+      <button class="chip chip-lin" data-f="Linguistic">Linguistic <span class="chip-c" id="c-lin"></span></button>
+      <button class="chip" data-f="other">Multimodal &amp; adjacent <span class="chip-c" id="c-oth"></span></button>
+    </div>
+    <div class="tbl-scroll reveal">
+      <table class="tbl" id="tbl-cov">
+        <thead>
+          <tr><th>Method</th><th>Dominant conditioning</th><th>Persistence</th><th>Conditions on → emits</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── CODE ─────────────────────────── -->
+<section class="band band-alt" id="code">
+  <div class="wrap">
+    <p class="kicker reveal">06 — Companion code</p>
+    <h2 class="reveal">Runs offline. No API key, no network.</h2>
+    <p class="section-note reveal">
+      A deterministic mock model returns completions from a fixed pool, so the whole
+      build → sample → validate → repair → select loop executes end to end and reproduces exactly.
+      An optional adapter is included for real model runs. Python 3.9+, standard library only.
+    </p>
+    <div class="code-grid">
+      <div class="code-files reveal">
+        <div class="cf"><code>search.py</code><span>the reference build loop, with bounded repair</span></div>
+        <div class="cf"><code>llm.py</code><span>pluggable interface: offline mock + optional real backend</span></div>
+        <div class="cf"><code>tsp_transient.py</code><span>a transient, numeric-conditioned TSP operator</span></div>
+        <div class="cf"><code>bpp_amortized.py</code><span>an amortized, code-emitting bin-packing operator</span></div>
+        <div class="cf"><code>ablation.py</code><span>the drop-channel ablation harness of the appendix</span></div>
+      </div>
+      <div class="code-run reveal">
+        <pre class="term"><code><span class="c-com"># the three appendix experiments</span>
+<span class="c-cmd">python3 tsp_transient.py</span>
+<span class="c-cmd">python3 bpp_amortized.py</span>
+<span class="c-cmd">python3 ablation.py candidates.json</span></code></pre>
+        <a class="btn btn-primary" href="https://github.com/camilochs/semantic-turn-companion">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Open the repository
+        </a>
+        <p class="code-note">Each script prints its own expected output, so a run either reproduces
+        the numbers in the appendix or visibly does not.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── CITE ─────────────────────────── -->
+<section class="band" id="cite">
+  <div class="wrap narrow">
+    <p class="kicker reveal">07 — Cite</p>
+    <h2 class="reveal">BibTeX</h2>
+    <div class="bib reveal">
+      <button class="copy" id="copy" type="button">Copy</button>
+      <pre id="bibtex"><code>@article{chaconsartori2026semanticturn,
+  author  = {Chac\'{o}n Sartori, Camilo and
+             Rodr\'{i}guez-Corominas, Guillem and
+             Blum, Christian},
+  title   = {From Hand-Crafted to {LLM}-Based Variation Operators
+             in Metaheuristics: A Tutorial},
+  year    = {2026},
+  note    = {Preprint in preparation}
+}</code></pre>
+    </div>
+    <p class="contact reveal">
+      Questions and corrections are welcome —
+      <a href="mailto:camilo.chacon@apeironagents.tech">camilo.chacon@apeironagents.tech</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-t">From Hand-Crafted to LLM-Based Variation Operators in Metaheuristics: A Tutorial</p>
+    <p class="foot-s">
+      Camilo Chacón Sartori · Guillem Rodríguez-Corominas · Christian Blum<br>
+      Apeiron Intelligence · Artificial Intelligence Research Institute (IIIA-CSIC) · Universitat Politècnica de Catalunya
+    </p>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
