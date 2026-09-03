@@ -168,11 +168,6 @@ body{
 .btn:hover{ transform:translateY(-1.5px); box-shadow:var(--shadow-lg); border-color:var(--ink-2); }
 .btn-primary{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 .btn-primary:hover{ border-color:var(--ink); }
-.btn.is-soon{ opacity:.9; }
-.soon{
-  font-family:var(--mono); font-size:9.5px; letter-spacing:.09em; text-transform:uppercase;
-  padding:2.5px 6px; border-radius:4px; background:rgba(255,255,255,.16); margin-left:2px;
-}
 
 /* ─── bands & headings ───────────────────────────────── */
 .band{ padding:clamp(58px,7.5vw,104px) 0; border-top:1px solid var(--rule-soft); }
