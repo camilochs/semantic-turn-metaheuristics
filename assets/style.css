@@ -447,3 +447,9 @@ p code, li code, .section-note code, .aside code{
 
 .tbl td.ev{ white-space:nowrap; }
 .code-note{ margin:16px 0 0 !important; font-size:13.6px; color:var(--muted); max-width:36ch; }
+
+.video-frame{
+  border-radius:14px; overflow:hidden; line-height:0;
+  background:var(--card); border:1px solid var(--rule); box-shadow:var(--shadow);
+}
+.video-frame video{ display:block; width:100%; height:auto; background:var(--paper-2); }
